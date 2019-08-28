@@ -1,3 +1,105 @@
-//Devoid
-//Player Movement
+//oPlayer0: Event: Create
 
+hsp = 0;
+vsp = 0;
+walksp = 4;
+grv = 0.5;
+
+//oPlayer0: Event: Step
+
+//Get player input
+key_left = keyboard_check(vk_left) || keyboard_check(ord("A"))
+key_right = keyboard_check(vk_right) || keyboard_check(ord("D"))
+key_jump = keyboard_check_pressed(vk_space);
+
+//Calcute Movement
+var move = key_right - key_left;
+
+hsp = move * walksp;
+
+vsp = vsp + grv;
+
+// Jump Action
+if (place_meeting(x, y+1, oWall)) && (key_jump)
+{
+	vsp = -9;
+}	
+
+//Horizontal Collision
+if (place_meeting(x + hsp, y, oWall))
+{
+	while (!place_meeting(x+hsp,y,oWall))
+	{
+		x= x+ sign(hsp);
+	}
+	hsp = 0;
+}
+
+x = x + hsp;
+
+// Vertical Collision
+if (place_meeting(x, y+vsp,oWall))
+{
+	while (!place_meeting(x, y+sign(vsp), oWall))
+	{
+		y = y + sign(vsp);
+	}
+	vsp = 0;
+
+}
+
+y = y + vsp;
+
+// Animation ( CRUDE ) (Kept just in case)
+/*
+
+if (hsp>0)
+{
+	sprite_index = sPlayerR0;
+}
+else if (hsp<0)
+{
+	sprite_index = sPlayerL0;
+}
+else if (hsp == 0)
+{
+	sprite_index = sPlayerS0;
+}
+
+*/
+
+// ALTERNATIVE WAY FOR ANIMATIONS ( BETTER ) ( BUT SPRITE MUST BE FACING RIGHT )
+
+/*
+
+FOR AIRBORNE WHEN WE HAVE AN AIRBORNE ANIMATION
+
+if (!place_meeting(x, y+1, oWall))
+{
+   sprite_index = sPlayerA0
+   image_speed = 0;
+   if (sign(vsp) > 0) image_index = 1; else image_index = 0;
+
+//ANIMATIONS FOR TURNING (RUNNING) LEFT AND RIGHT
+
+}
+
+*/
+image_speed = 1;
+if (place_meeting(x, y+1, oWall))
+{
+   if (hsp == 0)
+   {
+      sprite_index = sPlayerS0
+   }
+   else
+   {
+      sprite_index = sPlayerR0
+   }
+}
+
+if (hsp != 0) image_xscale = sign(hsp);
+
+//oPlayer0: Event: Create
+
+game_restart();
